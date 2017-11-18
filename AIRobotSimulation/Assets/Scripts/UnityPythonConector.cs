@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
@@ -10,22 +11,21 @@ using System;
 public class UnityPythonConector : MonoBehaviour {
 
     public GameObject traget;
-    private UdpClient clientControls = null;
-    private UdpClient clientPositionMatrix = null;
+    private UdpClient client = null;
     float[,,] positionMatrix;
+    int isRestarted = 0;
 
-    float x = 35;
-    float y = 35;
-    float h = 11;
+    float x = 30;
+    float y = 30;
+    float h = 30;
     int smothing = 8;
     //                         x,   y,    h
     float[] startPositions = {-1.3f,0.5f,1.3f};
-    float[] endPositions   = {1.1f,2.9f,2f};
+    float[] endPositions   = {1.1f,2.9f,3.7f};
 
     // Use this for initialization
     void Start () {
-        clientControls = new UdpClient(5002);
-        clientPositionMatrix = new UdpClient(5003);
+        client = new UdpClient(5002);
 
         positionMatrix = new float[Convert.ToInt32(x), Convert.ToInt32(y), Convert.ToInt32(h)];
 
@@ -33,8 +33,13 @@ public class UnityPythonConector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if(Input.GetKey("f")){
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Time.timeScale = 1f;
+            isRestarted = 1;
+        }
+
         UDPSendControls();
-        updatePosiotionMatrix();
     }
 
     private void UDPSendControls()
@@ -43,20 +48,14 @@ public class UnityPythonConector : MonoBehaviour {
             + -Input.GetAxis("Vertical") + ":"
             + -Input.GetAxis("Height") + ":"  + getGrab();
 
-        byte[] positionByte = new byte[positionMatrix.Length * sizeof(float)];
-        Buffer.BlockCopy(positionMatrix, 0, positionByte, 0, positionByte.Length);
-        Debug.Log(positionByte.Length);
-
-        IPEndPoint endpointControls = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
-        IPEndPoint endpointPositionMatrix = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5003);
-        byte[] sendBytesControls = Encoding.ASCII.GetBytes(controls + "$");
-        byte[] sendBytesPositionMatrix = new byte[positionMatrix.Length * sizeof(float)];
-        Buffer.BlockCopy(positionMatrix, 0, sendBytesPositionMatrix, 0, sendBytesPositionMatrix.Length);
-        clientControls.Send(sendBytesControls, sendBytesControls.Length, endpointControls);
-        clientPositionMatrix.Send(sendBytesPositionMatrix, sendBytesPositionMatrix.Length, endpointPositionMatrix);
+        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
+        byte[] sendBytes = Encoding.ASCII.GetBytes(controls + "$" + isRestarted + "$" + getPositionInMatrix());
+        isRestarted = 0;
+        Debug.Log(getPositionInMatrix());
+        client.Send(sendBytes, sendBytes.Length, endpoint);
     }
 
-    private void updatePosiotionMatrix()
+    private String getPositionInMatrix()
     {
         //get the postions from the target. NOTE: some dimentions are switcht for realism
         float targetX = traget.transform.position.x;
@@ -71,27 +70,9 @@ public class UnityPythonConector : MonoBehaviour {
         int positionInPosiotinMatrixY = Convert.ToInt32(Math.Round(distanceToStartY / ((endPositions[1] - startPositions[1]) / y)));
         int positionInPosiotinMatrixH = Convert.ToInt32(Math.Round(distanceToStartH / ((endPositions[2] - startPositions[2]) / h)));
 
-        Debug.Log(positionInPosiotinMatrixX + ":" + positionInPosiotinMatrixY + ":" + positionInPosiotinMatrixH);
+        //Debug.Log(positionInPosiotinMatrixX + ":" + positionInPosiotinMatrixY + ":" + positionInPosiotinMatrixH);
 
-        positionMatrix[positionInPosiotinMatrixX, positionInPosiotinMatrixY, positionInPosiotinMatrixH] = 1;
-
-        for (int i = 0; i < (positionMatrix.GetLength(0)-1); i++)
-        {
-            for (int j = 0; j < (positionMatrix.GetLength(1)-1); j++)
-            {
-                for (int l = 0; l < (positionMatrix.GetLength(2)-1); l++)
-                {
-                    if (positionMatrix[i,j,l] > (Time.deltaTime/smothing))
-                    {
-                        positionMatrix[i, j, l] -= (Time.deltaTime / smothing);
-                    }
-                    else
-                    {
-                        positionMatrix[i, j, l] = 0;
-                    }
-                }
-            }
-        }
+        return (positionInPosiotinMatrixX + ":" + positionInPosiotinMatrixY + ":" + positionInPosiotinMatrixH);
 
     }
 

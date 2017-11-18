@@ -22,7 +22,7 @@ class Controller:
 		sock.sendto(message, address)
 
 	def sendMessage(message, ipAddress, port):
-		#send a message to0the given ipAddress and port
+		#send a message to the given ipAddress and port
 		newAddress = (ipAddress, port)
 		sock.sendto(message, newAddress)
 
