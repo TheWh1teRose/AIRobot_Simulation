@@ -4,6 +4,7 @@
 [Bb]uild/
 [Bb]uilds/
 Assets/AssetStoreTools*
+ControlerScripts/traindata*
 
 # Visual Studio 2015 cache directory
 /.vs/
@@ -32,3 +33,5 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+ControlerScripts/demo.png
+ControlerScripts/demo.png

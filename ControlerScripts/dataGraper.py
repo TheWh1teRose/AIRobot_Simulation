@@ -3,15 +3,16 @@ import numpy as np
 import time
 import datetime
 import sys
+import gc
 from PIL import ImageGrab
 import cv2
 import threading
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-np.set_printoptions(threshold=np.nan)
+#enable garbage collector to free memory
+gc.enable()
 
-#stores the received control and position-matrix in a global variables
 controlsStr = "0:0:0:0"
 posInMatrixStr = "0:0:0"
 isRestarted = 0;
@@ -52,30 +53,33 @@ def convertControls(controls):
 			oneHotControls.append(abs(value))
 	return np.array(oneHotControls)
 
-def updatePositionMatrix(smothing):
+#function to update the position-matrix
+def updatePositionMatrix(smoothing):
 	global lastTime
 	global posMatrix
 	posInMatrix = list(map(int, posInMatrixStr.split(":")))
 	if posInMatrix[0] < posMatrixSize[0] and posInMatrix[1] < posMatrixSize[1] and posInMatrix[1] < posMatrixSize[1]:
 		posMatrix[posInMatrix[0], posInMatrix[1], posInMatrix[2]] = 1
 
+	#decreasing the values over time with smoothing
 	deltaTime = time.time() - lastTime
 	lastTime = time.time()
-	posMatrix = posMatrix - (deltaTime/smothing)
+	posMatrix = posMatrix - (deltaTime/smoothing)
 	posMatrix = posMatrix.clip(min=0)
 
-
+#sum up the position-matrix fro the axis to visualizes the matrix
 def getPositionMatrixImages():
 	posMatrixSumX = np.sum(posMatrix, axis=0).repeat(10,axis=0).repeat(10,axis=1)
 	posMatrixSumY = np.sum(posMatrix, axis=1).repeat(10,axis=0).repeat(10,axis=1)
 	posMatrixSumZ = np.sum(posMatrix, axis=2).repeat(10,axis=0).repeat(10,axis=1)
 	return posMatrixSumX, posMatrixSumY, posMatrixSumZ
 
+#save the training data to disc
 def saveData(data):
 	data = np.delete(data, 0, 0)
 	ts = time.time()
 	st = datetime.datetime.fromtimestamp(ts).strftime('%m%d%H%M%S')
-	np.save("data_1_"+st ,data)
+	np.save("traindata/data_1_"+st ,data)
 	print('saved data to disk')
 
 #start the contollers
@@ -98,15 +102,20 @@ while True:
 	y = controls
 	data = np.vstack((data, np.array((x,y))))
 
-	if isRestarted==1:
+	#checks if it is restarted then save it to disk and reset the position-matrix and the data array
+	if sys.getsizeof(data)>1000:
 		threadSaveData = threading.Thread(target=saveData, args=(data,))
 		threadSaveData.start()
 		data = np.array((np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)))
-
+		posMatrix = np.zeros((posMatrixSize[0],posMatrixSize[1],posMatrixSize[2]))
+		gc.collect()
+	
+	#show the position-matrix and the screen	
 	cv2.imshow('screen', np.array(x[:,:,:3],dtype=np.int8))
 	cv2.imshow('posMatrixX', x[:,:,3])
 	cv2.imshow('posMatrixY', x[:,:,4])
 	cv2.imshow('posMatrixZ', x[:,:,5])
+	print(sys.getsizeof(data))
 	if cv2.waitKey(25) & 0xFF == ord('q'): #quit statement 
             cv2.destroyAllWindows()
             break

@@ -14,6 +14,7 @@ public class UnityPythonConector : MonoBehaviour {
     private UdpClient client = null;
     float[,,] positionMatrix;
     int isRestarted = 0;
+    float timer = 0;
 
     float x = 30;
     float y = 30;
@@ -33,12 +34,13 @@ public class UnityPythonConector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(Input.GetKey("f")){
+        if(Input.GetKey("f") && timer > 1){
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             Time.timeScale = 1f;
             isRestarted = 1;
+            timer = 0;
         }
-
+        timer += Time.deltaTime;
         UDPSendControls();
     }
 
