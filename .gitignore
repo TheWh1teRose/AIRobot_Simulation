@@ -4,7 +4,7 @@
 [Bb]uild/
 [Bb]uilds/
 Assets/AssetStoreTools*
-ControlerScripts/traindata*
+DataProcessing/traindata*
 
 # Visual Studio 2015 cache directory
 /.vs/

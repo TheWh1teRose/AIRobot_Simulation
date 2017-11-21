@@ -103,7 +103,7 @@ while True:
 	data = np.vstack((data, np.array((x,y))))
 
 	#checks if it is restarted then save it to disk and reset the position-matrix and the data array
-	if sys.getsizeof(data)>1000:
+	if sys.getsizeof(data)>500:
 		threadSaveData = threading.Thread(target=saveData, args=(data,))
 		threadSaveData.start()
 		data = np.array((np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)))
