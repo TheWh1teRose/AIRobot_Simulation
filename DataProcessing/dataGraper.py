@@ -19,24 +19,10 @@ isRestarted = 0;
 posMatrixSize = [30,30,30]
 posMatrix = np.zeros((posMatrixSize[0],posMatrixSize[1],posMatrixSize[2]))
 lastTime = time.time()
-data = np.array((np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)))
+data = np.array([np.zeros((300,300,6), dtype=np.float64), np.zeros(8, dtype=np.int8)])
 
 #start the UDP connection to Unity that receive the controls an the position in the position matrix
-cnt = Controller("127.0.0.1", 5002)
-
-#define function to get the controls and position in matrix from the Unity UDP sender 
-def getData():
-	#get the controls from the unity Input.GetAxis function
-	#in the format: [horizontal]:[vertical]:[height]:[graping]
-	#and get the position in the matrix as [X]:[Y]:[Z]
-	while True:
-		global controlsStr
-		global posInMatrixStr
-		global isRestarted
-		data, address = cnt.recvData()
-		controlsStr = data.decode("utf-8").split("$")[0]
-		isRestarted = int(data.decode("utf-8").split("$")[1])
-		posInMatrixStr = data.decode("utf-8").split("$")[2]
+cnt = Controller("127.0.0.1", 5002)	
 
 
 #define function to convert the controls to an oneHot Array; -1:1:0:1 -> 0:1:1:0:0:0:1:0 
@@ -76,21 +62,29 @@ def getPositionMatrixImages():
 
 #save the training data to disc
 def saveData(data):
+	#delete the first placeholder column
 	data = np.delete(data, 0, 0)
 	ts = time.time()
 	st = datetime.datetime.fromtimestamp(ts).strftime('%m%d%H%M%S')
-	np.save("traindata/data_1_"+st ,data)
+	np.save("traindata/raw/data_1_"+st ,data)
 	print('saved data to disk')
 
 #start the contollers
 cnt.startController()
 print("start Controller")
 
-#start the getControls and getPosMAtrix function in a new thread to avoid data stagnation while reading image data
-thread = threading.Thread(target=getData)
-thread.start()
 
 while True:
+
+	#get the controls and position in matrix from the Unity UDP sender 
+	#get the controls from the unity Input.GetAxis function
+	#in the format: [horizontal]:[vertical]:[height]:[graping]
+	#and get the position in the matrix as [X]:[Y]:[Z]
+	UDPData, address = cnt.recvData()
+	controlsStr = UDPData.decode("utf-8").split("$")[0]
+	isRestarted = int(UDPData.decode("utf-8").split("$")[1])
+	posInMatrixStr = UDPData.decode("utf-8").split("$")[2]
+
 	#convert controls to onehot and print it
 	controls = convertControls(controlsStr)
 
@@ -102,13 +96,15 @@ while True:
 	y = controls
 	data = np.vstack((data, np.array((x,y))))
 
+
 	#checks if it is restarted then save it to disk and reset the position-matrix and the data array
-	if sys.getsizeof(data)>500:
+	if isRestarted==1:
 		threadSaveData = threading.Thread(target=saveData, args=(data,))
 		threadSaveData.start()
-		data = np.array((np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)))
 		posMatrix = np.zeros((posMatrixSize[0],posMatrixSize[1],posMatrixSize[2]))
+		data = np.array([np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)])
 		gc.collect()
+
 	
 	#show the position-matrix and the screen	
 	cv2.imshow('screen', np.array(x[:,:,:3],dtype=np.int8))

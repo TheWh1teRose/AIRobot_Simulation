@@ -29,6 +29,8 @@ class Controller:
 	def recvData(self, bufferSize=2097152):
 		#receive data from the socket
 		data, addr = self.sock.recvfrom(bufferSize)
+		if data is None:
+			print("data")
 		return data, addr
 
 

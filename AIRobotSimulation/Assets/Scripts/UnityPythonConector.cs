@@ -12,17 +12,18 @@ public class UnityPythonConector : MonoBehaviour {
 
     public GameObject traget;
     private UdpClient client = null;
-    float[,,] positionMatrix;
-    int isRestarted = 0;
-    float timer = 0;
+    private float[,,] positionMatrix;
+    private int isRestarted = 1;
+    private float timer = 0;
+    private float sendTimer = 0;
 
-    float x = 30;
-    float y = 30;
-    float h = 30;
-    int smothing = 8;
+    private float x = 30;
+    private float y = 30;
+    private float h = 30;
+    private int smothing = 8;
     //                         x,   y,    h
-    float[] startPositions = {-1.3f,0.5f,1.3f};
-    float[] endPositions   = {1.1f,2.9f,3.7f};
+    private float[] startPositions = {-1.3f,0.5f,1.3f};
+    private float[] endPositions   = {1.1f,2.9f,3.7f};
 
     // Use this for initialization
     void Start () {
@@ -34,27 +35,36 @@ public class UnityPythonConector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(Input.GetKey("f") && timer > 1){
+        if(Input.GetKeyDown("f") && timer > 1){
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             Time.timeScale = 1f;
             isRestarted = 1;
             timer = 0;
         }
+        
         timer += Time.deltaTime;
+        sendTimer += Time.deltaTime;
         UDPSendControls();
     }
 
     private void UDPSendControls()
     {
-        string controls = Input.GetAxis("Horizontal") + ":"
+        if(sendTimer>0.15)
+        {
+
+            Debug.Log(isRestarted);
+
+            string controls = Input.GetAxis("Horizontal") + ":"
             + -Input.GetAxis("Vertical") + ":"
             + -Input.GetAxis("Height") + ":"  + getGrab();
 
-        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
-        byte[] sendBytes = Encoding.ASCII.GetBytes(controls + "$" + isRestarted + "$" + getPositionInMatrix());
-        isRestarted = 0;
-        Debug.Log(getPositionInMatrix());
-        client.Send(sendBytes, sendBytes.Length, endpoint);
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
+            byte[] sendBytes = Encoding.ASCII.GetBytes(controls + "$" + isRestarted + "$" + getPositionInMatrix());
+            isRestarted = 0;
+            Debug.Log(getPositionInMatrix());
+            client.Send(sendBytes, sendBytes.Length, endpoint);
+            sendTimer=0;
+        }
     }
 
     private String getPositionInMatrix()
