@@ -11,7 +11,6 @@ def dropData(dropArray, oldData):
 	#default path 'traindata/raw/*.npy'
 	data = np.array([np.zeros((300,300,6), dtype=np.float64), np.zeros(8, dtype=np.int8)])
 
-	
 	dropIndex = []
 	for i in range(oldData.shape[0]):
 		if np.array_equal(oldData[i][1], dropArray):
@@ -32,10 +31,10 @@ def qualifyData(oldData):
 		stringData.append(convertByteLikeArrayToString(oldData[i][1]))
 
 	dataframe = pd.DataFrame({'data':stringData})
-	print(dataframe['data'].value_counts()[2])
+	print(dataframe['data'].value_counts())
 
 	minValue = dataframe['data'].value_counts().min()
-	differentValues = [[1,0,0,0,0,0,0,0], [0,1,0,0,0,0,0,0], [0,0,0,0,1,0,0,0], [1,0,0,0,0,0,1,0]]
+	differentValues = [[1,0,0,0,0,0,0,0], [0,1,0,0,0,0,0,0], [0,0,0,0,1,0,0,0], [0,0,0,0,0,1,0,0]]
 
 	
 

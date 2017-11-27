@@ -6,46 +6,87 @@ import time
 import datetime
 import pandas as pd
 import preprocessingUtils as pu
-
+import pickle
+ 
 gc.enable()
 
-maxMemoryUsage = 1000
+maxMemoryUsage = 10000
 path = 'traindata/raw/*.npy'
 file = glob.glob(path)
 data = np.array([np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)])
 
 def saveData(data):
 	#delete the first placeholder column
-	data = np.delete(data, 0, 0)
 	ts = time.time()
 	st = datetime.datetime.fromtimestamp(ts).strftime('%m%d%H%M%S')
-	np.save("traindata/pre/data_1_"+st ,data)
+	pickle.dump(data, open("traindata/pre/data_1_"+st, "wb"))
 	print('saved data to disk')
+
+def processData(data):
+	data = pu.dropData(np.array([0,0,0,0,0,0,0,0]), data)
+	print("Drop")
+	data = np.delete(data, [0,1,2], 0)
+	data = pu.dropData(np.array([0,0,0,0,0,0,1,0]), data)
+	print("Drop")
+	data = np.delete(data, [0,1,2], 0)
+	data = pu.dropData(np.array([0,0,0,0,0,0,0,1]), data)
+	print("Drop")
+	data = np.delete(data, [0,1,2], 0)
+	data = pu.dropData(np.array([1,0,0,0,0,0,0,1]), data)
+	print("Drop")
+	data = np.delete(data, [0,1,2], 0)
+	gc.collect()
+	#data = np.random.shuffle(data)
+	pu.qualifyData(data)
+	print(data[:,1].shape)
+	full_X = data[:,0]
+	for i in range(full_X.shape[0]):
+		if i==0:
+			addArray = full_X[i]
+			new_X = addArray[np.newaxis,...]
+		if i==1:
+			addArray = full_X[i]
+			print("test")
+			print(addArray.shape)
+			print(new_X.shape)
+			new_X = np.concatenate((new_X, addArray[np.newaxis,...]), axis=0)
+		if i > 1:
+			addArray = full_X[i]
+			print("test")
+			print(new_X.shape)
+			new_X = np.concatenate((new_X, addArray[np.newaxis,...]), axis=0)
+		full_Y = data[:,1]
+	for i in range(full_Y.shape[0]):
+		if i==0:
+			addArray = full_Y[i]
+			new_Y = addArray[np.newaxis,...]
+		if i==1:
+			addArray = full_Y[i]
+			print("test")
+			print(addArray.shape)
+			print(new_Y.shape)
+			new_Y = np.concatenate((new_Y, addArray[np.newaxis,...]), axis=0)
+		if i > 1:
+			addArray = full_Y[i]
+			print("test")
+			print(new_Y.shape)
+			new_Y = np.concatenate((new_Y, addArray[np.newaxis,...]), axis=0)
+	new_data = [np.array(new_X), np.array(new_Y)]
+
+	print(new_data[0].shape)
+	print(new_data[1].shape)
+	return new_data
 
 for f in file:
 	lastoldData = np.load(f)
 	data = np.vstack((data, np.delete(lastoldData, 1, 0)))
 	print("load: " + f)
 	if sys.getsizeof(data)>maxMemoryUsage:
-		data = pu.dropData(np.array([0,0,0,0,0,0,0,0]), data)
-		print("Drop")
-		data = np.delete(data, [0,1,2], 0)
-		data = pu.dropData(np.array([0,0,0,0,0,0,1,0]), data)
-		print("Drop")
-		data = np.delete(data, [0,1,2], 0)
-		data = pu.dropData(np.array([0,0,0,0,0,0,0,1]), data)
-		print("Drop")
-		data = np.delete(data, [0,1,2], 0)
-		gc.collect()
-		data = np.random.shuffle(data)
-		pu.qualifyData(data)
+		data = processData(data)
 		saveData(data)
 		data = np.array([np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)])
 		gc.collect()
 
 
-data = pu.dropData(np.array([0,0,0,0,0,0,0,0]), data)
-print("Drop")
-gc.collect()
-pu.qualifyData(data)
+data = processData(data)
 saveData(data)
