@@ -79,12 +79,14 @@ with graph.as_default():
 	print(tf_X_train)
 
 	layer_conv1, weights_conv1 = cnn.create_conv_layer(tf_X_train, image_depth, filter_size1, num_filters1)
-	layer_conv1_pool = cnn.pooling(layer_conv1)
+	layer_conv2, weights_conv2 = cnn.create_conv_layer(layer_conv1, num_filters1, filter_size2, num_filters2)
+	layer_conv2_pool = cnn.pooling(layer_conv2)
 
-	layer_conv3, weights_conv3 = cnn.create_conv_layer(layer_conv1_pool, num_filters1, filter_size3, num_filters3)
-	layer_conv3_pool = cnn.pooling(layer_conv3)
+	layer_conv3, weights_conv3 = cnn.create_conv_layer(layer_conv2_pool, num_filters2, filter_size3, num_filters3)
+	layer_conv4, weights_conv4 = cnn.create_conv_layer(layer_conv3_pool, num_filters3, filter_size4, num_filters4)
+	layer_conv4_pool = cnn.pooling(layer_conv4)
 
-	layer_conv5, weights_conv5 = cnn.create_conv_layer(layer_conv3_pool, num_filters3, filter_size5, num_filters5)
+	layer_conv5, weights_conv5 = cnn.create_conv_layer(layer_conv4_pool, num_filters4, filter_size5, num_filters5)
 	layer_conv6, weights_conv6 = cnn.create_conv_layer(layer_conv5, num_filters5, filter_size6, num_filters6)
 	layer_conv6_pool = cnn.pooling(layer_conv6)
 
