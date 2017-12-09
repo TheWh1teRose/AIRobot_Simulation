@@ -10,7 +10,10 @@ def create_biases(lenght):
 def create_conv_layer(input, num_input_channels, filter_size, num_filters, cnn_stride=1):
 	shape = [filter_size, filter_size, num_input_channels, num_filters]
 	weights = create_weights(shape)
+	print("test")
+	print(weights)
 	biases = create_biases(num_filters)
+	print(input)
 	layer = tf.nn.conv2d(input=input, filter=weights, strides=[1, cnn_stride, cnn_stride, 1], padding='SAME')
 	layer += biases
 

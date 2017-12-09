@@ -29,6 +29,9 @@ def processData(data):
 	data = pu.dropData(np.array([0,0,0,0,0,0,1,0]), data)
 	print("Drop")
 	data = np.delete(data, [0,1,2], 0)
+	data = pu.dropData(np.array([1,0,1,0,1,0,1,0]), data)
+	print("Drop")
+	data = np.delete(data, [0,1,2], 0)
 	data = pu.dropData(np.array([0,0,0,0,0,0,0,1]), data)
 	print("Drop")
 	data = np.delete(data, [0,1,2], 0)
@@ -79,7 +82,9 @@ def processData(data):
 
 for f in file:
 	lastoldData = np.load(f)
-	data = np.vstack((data, np.delete(lastoldData, 1, 0)))
+	print(lastoldData.shape)
+	lastoldData = np.delete(lastoldData, 0,0)
+	data = np.vstack((data, lastoldData))
 	print("load: " + f)
 	if sys.getsizeof(data)>maxMemoryUsage:
 		data = processData(data)
@@ -87,6 +92,6 @@ for f in file:
 		data = np.array([np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)])
 		gc.collect()
 
-
+pu.qualifyData(data)
 data = processData(data)
 saveData(data)

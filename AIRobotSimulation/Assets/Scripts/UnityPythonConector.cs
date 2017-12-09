@@ -12,10 +12,17 @@ public class UnityPythonConector : MonoBehaviour {
 
     public GameObject traget;
     private UdpClient client = null;
+    private Thread receiveThread;
     private float[,,] positionMatrix;
     private int isRestarted = 1;
     private float timer = 0;
     private float sendTimer = 0;
+
+    public float moveSpeed = 0.35f;
+
+     int horizontal = 0;
+     int vertical = 0;
+     int height = 0;
 
     private float x = 30;
     private float y = 30;
@@ -30,9 +37,10 @@ public class UnityPythonConector : MonoBehaviour {
         client = new UdpClient(5002);
 
         positionMatrix = new float[Convert.ToInt32(x), Convert.ToInt32(y), Convert.ToInt32(h)];
-
+        receiveThread = new Thread(new ThreadStart(RemoteControl));
+        receiveThread.Start();
     }
-	
+
 	// Update is called once per frame
 	void Update () {
         if(Input.GetKeyDown("f") && timer > 1){
@@ -41,10 +49,17 @@ public class UnityPythonConector : MonoBehaviour {
             isRestarted = 1;
             timer = 0;
         }
-        
+
         timer += Time.deltaTime;
         sendTimer += Time.deltaTime;
-        UDPSendControls();
+
+        Debug.Log("" + horizontal + ":" + vertical + ":" + height);
+
+        traget.transform.Translate(moveSpeed * horizontal*Time.deltaTime,
+            moveSpeed * vertical * Time.deltaTime,
+            moveSpeed * height * Time.deltaTime);
+
+        //UDPSendControls();
     }
 
     private void UDPSendControls()
@@ -52,11 +67,23 @@ public class UnityPythonConector : MonoBehaviour {
         if(sendTimer>0.15)
         {
 
+          int horizontal = 0;
+          int vertical = 0;
+          int height = 0;
+          if(Input.GetAxis("Horizontal")>0){horizontal=1;}
+          else if(Input.GetAxis("Horizontal")<0){horizontal=-1;}
+          else if(Input.GetAxis("Vertical")>0){vertical=1;}
+          else if(Input.GetAxis("Vertical")<0){vertical=-1;}
+          else if(Input.GetAxis("Height")>0){height=1;}
+          else if(Input.GetAxis("Height")<0){height=-1;}
+
             Debug.Log(isRestarted);
 
-            string controls = Input.GetAxis("Horizontal") + ":"
-            + -Input.GetAxis("Vertical") + ":"
-            + -Input.GetAxis("Height") + ":"  + getGrab();
+            string controls = horizontal + ":"
+            + -vertical + ":"
+            + -height + ":"  + getGrab();
+
+            Debug.Log(controls);
 
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
             byte[] sendBytes = Encoding.ASCII.GetBytes(controls + "$" + isRestarted + "$" + getPositionInMatrix());
@@ -65,6 +92,30 @@ public class UnityPythonConector : MonoBehaviour {
             client.Send(sendBytes, sendBytes.Length, endpoint);
             sendTimer=0;
         }
+    }
+
+    private void RemoteControl()
+    {
+          while(true)
+          {
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
+            Byte[] receiveBytes = client.Receive(ref endpoint);
+            string returnData = Encoding.ASCII.GetString(receiveBytes);
+            if(returnData[0].Equals('1')){horizontal=1;}
+            if(returnData[2].Equals('1')){horizontal=-1;}
+            if(returnData[4].Equals('1')){vertical=1;}
+            if(returnData[6].Equals('1')){vertical=-1;}
+            if(returnData[8].Equals('1')){height=1;}
+            if(returnData[10].Equals('1')){height=-1;}
+
+            if(returnData[0].Equals('0')&&returnData[2].Equals('0')){horizontal=0;}
+            if(returnData[4].Equals('0')&&returnData[6].Equals('0')){vertical=0;}
+            if(returnData[8].Equals('0')&&returnData[10].Equals('0')){height=0;}
+            //if(returnData[6].Equals('1')){horizontal=1;}
+            //Sif(returnData[7].Equals('1')){horizontal=1;}
+            Debug.Log(returnData);
+          }
+
     }
 
     private String getPositionInMatrix()

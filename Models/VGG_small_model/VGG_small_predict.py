@@ -1,0 +1,116 @@
+import numpy as np
+import tensorflow as tf
+import CNN_utils as cnn
+from PIL import ImageGrab
+import cv2
+import time
+
+#architecture
+filter_size1 = 3
+num_filters1 = 64
+filter_size2 = 3
+num_filters2 = 64
+#maxpool
+filter_size3 = 3
+num_filters3 = 128
+filter_size4 = 3
+num_filters4 = 128
+#maxpool
+filter_size5 = 3
+num_filters5 = 256
+filter_size6 = 3
+num_filters6 = 256
+#maxpool
+filter_size7 = 3
+num_filters7 = 512
+filter_size8 = 3
+num_filters8 = 512
+#maxpool
+filter_size9 = 3
+num_filters9 = 512
+filter_size10 = 3
+num_filters10 = 512
+#maxpool
+fc_size1 	 = 4096
+fc_size2 	 = 4096
+fc_size3 	 = 1000
+
+image_width = 300
+image_height = 300
+image_depth = 3
+num_lable = 8
+
+epochs = 5000
+start_learning_rate = 0.0001
+batch_size = 16
+keep_probability = 0.5
+
+graph = tf.Graph()
+with graph.as_default():
+	tf_X_train = tf.placeholder(tf.float32, shape=[None, image_height, image_width, image_depth], name='X')
+	tf_y_train = tf.placeholder(tf.float32, shape=[None, num_lable], name='y')
+	tf_y_train_cls = tf.argmax(tf_y_train, dimension=1)
+	keep_prob = tf.placeholder(tf.float32, name='keep_prob')
+
+	global_step = tf.Variable(0, trainable=False)
+	learning_rate = tf.train.exponential_decay(start_learning_rate, global_step, 100, 0.96, staircase=True)
+	print(tf_X_train)
+
+	tf_images = tf.image.resize_images(tf_X_train, [224, 224])
+
+	layer_conv1, weights_conv1 = cnn.create_conv_layer(tf_images, image_depth, filter_size1, num_filters1)
+	layer_conv2, weights_conv2 = cnn.create_conv_layer(layer_conv1, num_filters1, filter_size2, num_filters2)
+	layer_conv2_pool = cnn.pooling(layer_conv2)
+
+	layer_conv3, weights_conv3 = cnn.create_conv_layer(layer_conv2_pool, num_filters2, filter_size3, num_filters3)
+	layer_conv4, weights_conv4 = cnn.create_conv_layer(layer_conv3, num_filters3, filter_size4, num_filters4)
+	layer_conv4_pool = cnn.pooling(layer_conv3)
+
+	layer_conv5, weights_conv5 = cnn.create_conv_layer(layer_conv4_pool, num_filters4, filter_size5, num_filters5)
+	layer_conv6, weights_conv6 = cnn.create_conv_layer(layer_conv5, num_filters5, filter_size6, num_filters6)
+	layer_conv6_pool = cnn.pooling(layer_conv6)
+
+	layer_conv7, weights_conv7 = cnn.create_conv_layer(layer_conv6_pool, num_filters6, filter_size7, num_filters7)
+	layer_conv8, weights_conv8 = cnn.create_conv_layer(layer_conv7, num_filters7, filter_size8, num_filters8)
+	layer_conv8_pool = cnn.pooling(layer_conv8)
+
+	layer_conv9, weights_conv9 = cnn.create_conv_layer(layer_conv8_pool, num_filters8, filter_size9, num_filters9)
+	layer_conv10, weights_conv10 = cnn.create_conv_layer(layer_conv9, num_filters9, filter_size10, num_filters10)
+	layer_conv10_pool = cnn.pooling(layer_conv10)
+
+
+	layer_flat, num_features = cnn.flatten_layer(layer_conv10_pool)
+	fc_layer1 = cnn.create_fully_connected_layer(layer_flat, num_features, fc_size1)
+	fc_layer1_dropout = cnn.dropout(fc_layer1, keep_prob)
+	fc_layer2 = cnn.create_fully_connected_layer(fc_layer1_dropout, fc_size1, fc_size2)
+	fc_layer2_dropout = cnn.dropout(fc_layer2, keep_prob)
+	fc_layer3 = cnn.create_fully_connected_layer(fc_layer2_dropout, fc_size2, fc_size3)
+	fc_layer4 = cnn.create_fully_connected_layer(fc_layer3, fc_size3, num_lable, relu=False)
+
+
+	y_pred = tf.nn.softmax(fc_layer4)
+	y_pred_cls = tf.argmax(y_pred, dimension=1)
+	cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(logits=fc_layer4, labels=tf_y_train)
+	cost = tf.reduce_mean(cross_entropy)
+	optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost, global_step=global_step)
+	correct_prediction = tf.equal(y_pred_cls, tf_y_train_cls)
+	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+	tf.summary.scalar('Accuracy', accuracy)
+	tf.summary.scalar('loss/cost', cost)
+	merged = tf.summary.merge_all()
+	saver = tf.train.Saver()
+
+tf.reset_default_graph()
+with tf.Session(graph=graph) as session:
+	tf.global_variables_initializer().run()
+	saver.restore(session, 'checkpoints/model.ckpt')
+
+	while True:
+		printscreen = np.array(ImageGrab.grab(bbox=(2,50,302,350)))
+		print(printscreen.shape)
+		prediction = session.run(y_pred, feed_dict={tf_X_train: printscreen[np.newaxis,:], keep_prob:1.0})
+		time.sleep(1)
+		print(prediction)
+	
+	session.close()

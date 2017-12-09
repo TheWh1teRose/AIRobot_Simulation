@@ -24,6 +24,13 @@ ExportedObj/
 *.svd
 *.pdb
 
+# Tensorflow checkpoints and training data
+*.pickle
+*.ckpt.data-00000-of-00001
+*.ckpt.index
+*.ckpt.meta
+checkpoint
+
 # Unity3D generated meta files
 *.pidb.meta
 
@@ -33,5 +40,3 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-ControlerScripts/demo.png
-ControlerScripts/demo.png
