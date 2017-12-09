@@ -250,7 +250,7 @@ with tf.Session(graph=graph) as session:
 			courent_batch_position = overLapp
 
 		session.run(optimizer, feed_dict={tf_X_train: X_batch, tf_y_train: y_batch, keep_prob: keep_probability})
-		summary, acc = session.run([merged, accuracy], feed_dict={tf_X_train: X_batch, tf_y_train: y_batch, keep_prob: 1})
+		summary, acc = session.run([merged, accuracy], feed_dict={tf_X_train: X_batch, tf_y_train: y_batch, tf_posmat_train: posmat_batch, keep_prob: 1})
 		train_writer.add_summary(summary, total_epochs)
 		total_epochs += 1
 		if total_epochs % 100 == 0:
@@ -271,7 +271,7 @@ with tf.Session(graph=graph) as session:
 					posmat_batch_valid = posmat_valid[: overLapp_valid,...]
 					courent_batch_position_valid = overLapp_valid
 
-				all_acc_valid.append(session.run(accuracy, feed_dict={tf_X_train: X_batch_valid, tf_y_train:y_batch_valid, keep_prob: 1}))
+				all_acc_valid.append(session.run(accuracy, feed_dict={tf_X_train: X_batch_valid, tf_y_train:y_batch_valid, tf_posmat_train: posmat_batch_valid, keep_prob: 1}))
 			print("Valid Accuracy: " + str(functools.reduce(lambda x_, y_: x_ + y_, all_acc_valid)/len(all_acc_valid)))
 			print("loss: " + str())
 
@@ -294,6 +294,6 @@ with tf.Session(graph=graph) as session:
 			posmat_batch = posmat_test[: overLapp,...]
 			courent_batch_position = overLapp
 
-	all_acc_test.append(session.run(accuracy, feed_dict={tf_X_train: X_batch, tf_y_train:y_batch, keep_prob: 1}))
+	all_acc_test.append(session.run(accuracy, feed_dict={tf_X_train: X_batch, tf_y_train:y_batch, tf_posmat_train: posmat_batch, keep_prob: 1}))
 	print("Test Accuracy: " + str(functools.reduce(lambda x, y: x + y, all_acc_test)/len(all_acc_test)))
 	session.close()
