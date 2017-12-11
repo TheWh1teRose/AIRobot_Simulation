@@ -31,12 +31,16 @@ def convertControls(controls):
 	oneHotControls = []
 	for i, value in enumerate(beforeControls):
 		value = float(value)
-		if value >= 0:
-			oneHotControls.append(value)
+		if value > 0:
+			oneHotControls.append(1)
+			oneHotControls.append(0)
+		elif value == 0: 
+			oneHotControls.append(0)
 			oneHotControls.append(0)
 		else: 
 			oneHotControls.append(0)
-			oneHotControls.append(abs(value))
+			oneHotControls.append(1)
+	print(oneHotControls)
 	return np.array(oneHotControls)
 
 #function to update the position-matrix
