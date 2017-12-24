@@ -22,10 +22,10 @@ lastTime = time.time()
 data = np.array([np.zeros((300,300,6), dtype=np.float64), np.zeros(8, dtype=np.int8)])
 
 #start the UDP connection to Unity that receive the controls an the position in the position matrix
-cnt = Controller("127.0.0.1", 5002)	
+cnt = Controller("127.0.0.1", 5002)
 
 
-#define function to convert the controls to an oneHot Array; -1:1:0:1 -> 0:1:1:0:0:0:1:0 
+#define function to convert the controls to an oneHot Array; -1:1:0:1 -> 0:1:1:0:0:0:1:0
 def convertControls(controls):
 	beforeControls = controlsStr.split(":")
 	oneHotControls = []
@@ -34,10 +34,10 @@ def convertControls(controls):
 		if value > 0:
 			oneHotControls.append(1)
 			oneHotControls.append(0)
-		elif value == 0: 
+		elif value == 0:
 			oneHotControls.append(0)
 			oneHotControls.append(0)
-		else: 
+		else:
 			oneHotControls.append(0)
 			oneHotControls.append(1)
 	print(oneHotControls)
@@ -80,7 +80,7 @@ print("start Controller")
 
 while True:
 
-	#get the controls and position in matrix from the Unity UDP sender 
+	#get the controls and position in matrix from the Unity UDP sender
 	#get the controls from the unity Input.GetAxis function
 	#in the format: [horizontal]:[vertical]:[height]:[graping]
 	#and get the position in the matrix as [X]:[Y]:[Z]
@@ -109,14 +109,13 @@ while True:
 		data = np.array([np.array((300,300,6), dtype=np.float64), np.array(8, dtype=np.int8)])
 		gc.collect()
 
-	
-	#show the position-matrix and the screen	
+
+	#show the position-matrix and the screen
 	cv2.imshow('screen', np.array(x[:,:,:3],dtype=np.int8))
 	cv2.imshow('posMatrixX', x[:,:,3])
 	cv2.imshow('posMatrixY', x[:,:,4])
 	cv2.imshow('posMatrixZ', x[:,:,5])
 	print(sys.getsizeof(data))
-	if cv2.waitKey(25) & 0xFF == ord('q'): #quit statement 
+	if cv2.waitKey(25) & 0xFF == ord('q'): #quit statement
             cv2.destroyAllWindows()
             break
-

@@ -7,7 +7,7 @@ import datetime
 import pandas as pd
 import preprocessingUtils as pu
 import pickle
- 
+
 gc.enable()
 
 maxMemoryUsage = 10000
@@ -24,25 +24,45 @@ def saveData(data):
 
 def processData(data):
 	data = pu.dropData(np.array([0,0,0,0,0,0,0,0]), data)
-	print("Drop")
 	data = np.delete(data, [0,1,2], 0)
 	data = pu.dropData(np.array([0,0,0,0,0,0,1,0]), data)
-	print("Drop")
 	data = np.delete(data, [0,1,2], 0)
-	data = pu.dropData(np.array([1,0,1,0,1,0,1,0]), data)
-	print("Drop")
+	data = pu.dropData(np.array([0,1,0,0,0,0,0,1]), data)
 	data = np.delete(data, [0,1,2], 0)
 	data = pu.dropData(np.array([0,0,0,0,0,0,0,1]), data)
-	print("Drop")
 	data = np.delete(data, [0,1,2], 0)
-	data = pu.dropData(np.array([1,0,0,0,0,0,0,1]), data)
-	print("Drop")
+	data = pu.dropData(np.array([0,0,0,0,1,0,1,0]), data)
 	data = np.delete(data, [0,1,2], 0)
 	gc.collect()
 	#data = np.random.shuffle(data)
-	pu.qualifyData(data)
 	print(data[:,1].shape)
 	full_X = data[:,0]
+	full_Y = data[:,1]
+	new_X = full_X[0][np.newaxis,...]
+	new_Y = full_Y[0][np.newaxis,...]
+	for i in range(full_Y.shape[0]):
+		try:
+			if not np.array_equal(full_Y[i], full_Y[i+1]):
+				for j in range(3):
+					index = j - 1
+					add_Y = full_Y[i+index]
+					add_X = full_X[i+index]
+					print(new_Y.shape)
+					print(add_Y[np.newaxis,...].shape)
+					new_Y = np.concatenate((new_Y, add_Y[np.newaxis,...]), axis=0)
+					new_X = np.concatenate((new_X, add_X[np.newaxis,...]), axis=0)
+			else:
+				print("Skip")
+
+		except:
+			print("not posible")
+		print(new_X.shape)
+
+	new_data = [np.array(new_X), np.array(new_Y)]
+	new_data = pu.qualifyData(new_data)
+	print(new_data[0].shape)
+	print(new_data[1].shape)
+	return new_data
 	for i in range(full_X.shape[0]):
 		if i==0:
 			addArray = full_X[i]
@@ -58,7 +78,6 @@ def processData(data):
 			print("test")
 			print(new_X.shape)
 			new_X = np.concatenate((new_X, addArray[np.newaxis,...]), axis=0)
-		full_Y = data[:,1]
 	for i in range(full_Y.shape[0]):
 		if i==0:
 			addArray = full_Y[i]
@@ -74,11 +93,7 @@ def processData(data):
 			print("test")
 			print(new_Y.shape)
 			new_Y = np.concatenate((new_Y, addArray[np.newaxis,...]), axis=0)
-	new_data = [np.array(new_X), np.array(new_Y)]
 
-	print(new_data[0].shape)
-	print(new_data[1].shape)
-	return new_data
 
 for f in file:
 	lastoldData = np.load(f)

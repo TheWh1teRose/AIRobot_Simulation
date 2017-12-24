@@ -12,6 +12,7 @@ public class UnityPythonConector : MonoBehaviour {
 
     public GameObject traget;
     private UdpClient client = null;
+    private UdpClient rcvClient = null;
     private Thread receiveThread;
     private float[,,] positionMatrix;
     private int isRestarted = 1;
@@ -35,6 +36,7 @@ public class UnityPythonConector : MonoBehaviour {
     // Use this for initialization
     void Start () {
         client = new UdpClient(5002);
+        rcvClient = new UdpClient(5003);
 
         positionMatrix = new float[Convert.ToInt32(x), Convert.ToInt32(y), Convert.ToInt32(h)];
         receiveThread = new Thread(new ThreadStart(RemoteControl));
@@ -45,6 +47,8 @@ public class UnityPythonConector : MonoBehaviour {
 	void Update () {
         if(Input.GetKeyDown("f") && timer > 1){
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            client = new UdpClient(5002);
+            rcvClient = new UdpClient(5003);
             Time.timeScale = 1f;
             isRestarted = 1;
             timer = 0;
@@ -59,7 +63,13 @@ public class UnityPythonConector : MonoBehaviour {
             moveSpeed * vertical * Time.deltaTime,
             moveSpeed * height * Time.deltaTime);
 
-        //UDPSendControls();
+        UDPSendControls();
+    }
+
+    void OnApplicationQuit()
+    {
+        client.Close();
+        rcvClient.Close();
     }
 
     private void UDPSendControls()
@@ -98,8 +108,8 @@ public class UnityPythonConector : MonoBehaviour {
     {
           while(true)
           {
-            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
-            Byte[] receiveBytes = client.Receive(ref endpoint);
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5003);
+            Byte[] receiveBytes = rcvClient.Receive(ref endpoint);
             string returnData = Encoding.ASCII.GetString(receiveBytes);
             if(returnData[0].Equals('1')){horizontal=1;}
             if(returnData[2].Equals('1')){horizontal=-1;}

@@ -168,6 +168,7 @@ with graph.as_default():
 		layer_conv3, weights_conv3 = cnn.create_conv_layer(layer_conv2_pool, num_filters2, filter_size3, num_filters3, name='3_conv_layer')
 		layer_conv4, weights_conv4 = cnn.create_conv_layer(layer_conv3, num_filters3, filter_size4, num_filters4, name='4_conv_layer')
 		layer_conv4_pool = cnn.pooling(layer_conv3, name='layer_4_pooling')
+		layer_conv4_pool = cnn.pooling(layer_conv4, name='layer_4_pooling')
 
 	with tf.variable_scope('third_conv_stage_256_filter') as scope:
 		layer_conv5, weights_conv5 = cnn.create_conv_layer(layer_conv4_pool, num_filters4, filter_size5, num_filters5, name='5_conv_layer')

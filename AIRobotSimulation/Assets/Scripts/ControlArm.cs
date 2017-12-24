@@ -20,11 +20,11 @@ public class ControlArm : MonoBehaviour {
         int vertical = 0;
         int height = 0;
         if(Input.GetAxis("Horizontal")>0){horizontal=1;}
-        if(Input.GetAxis("Horizontal")<0){horizontal=-1;}
-        if(Input.GetAxis("Vertical")>0){vertical=1;}
-        if(Input.GetAxis("Vertical")<0){vertical=-1;}
-        if(Input.GetAxis("Height")>0){height=1;}
-        if(Input.GetAxis("Height")<0){height=-1;}
+        else if(Input.GetAxis("Horizontal")<0){horizontal=-1;}
+        else if(Input.GetAxis("Vertical")>0){vertical=1;}
+        else if(Input.GetAxis("Vertical")<0){vertical=-1;}
+        else if(Input.GetAxis("Height")>0){height=1;}
+        else if(Input.GetAxis("Height")<0){height=-1;}
 
         transform.Translate(moveSpeed * horizontal*Time.deltaTime,
             moveSpeed * -vertical * Time.deltaTime,

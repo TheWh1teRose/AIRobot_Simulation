@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 import threading
 import glob
 import sys
@@ -6,6 +6,7 @@ import gc
 import time
 import datetime
 import pandas as pd
+import sklearn
 
 def dropData(dropArray, oldData):
 	#default path 'traindata/raw/*.npy'
@@ -25,20 +26,40 @@ def dropData(dropArray, oldData):
 
 	return data
 
-def qualifyData(oldData):
+def qualifyData(data):
 	stringData = []
-	for i in range(oldData.shape[0]):
-		stringData.append(convertByteLikeArrayToString(oldData[i][1]))
+	for i in range(data[0].shape[0]):
+		stringData.append(convertByteLikeArrayToString(data[1][i]))
 
 	dataframe = pd.DataFrame({'data':stringData})
+	counts = dataframe['data'].value_counts().values
+	min_counts = np.amin(counts)
 	print(dataframe['data'].value_counts())
 
 	minValue = dataframe['data'].value_counts().min()
-	differentValues = [[1,0,0,0,0,0,0,0], [0,1,0,0,0,0,0,0], [0,0,0,0,1,0,0,0], [0,0,0,0,0,1,0,0]]
+	shuffled_X, shuffled_Y = sklearn.utils.shuffle(data[0], data[1])
+	new_X = shuffled_X[0][np.newaxis,...]
+	new_Y = shuffled_Y[0][np.newaxis,...]
+	differentValues = [[1,0,0,0,0,0,0,0], [0,1,0,0,0,0,0,0], [0,0,1,0,0,0,0,0], [0,0,0,1,0,0,0,0], [0,0,0,0,1,0,0,0], [0,0,0,0,0,1,0,0]]
 
-	
+	for value in differentValues:
+		tmp_X = np.zeros([1,300,300,6])
+		tmp_Y = np.zeros([1,8])
+		for i in range(shuffled_Y.shape[0]):
+			if (np.array(shuffled_Y[i-1])==value).all():
+				tmp_Y = np.concatenate((tmp_Y, shuffled_Y[i-1][np.newaxis,...]), axis=0)
+				tmp_X = np.concatenate((tmp_X, shuffled_X[i-1][np.newaxis,...]), axis=0)
+			if tmp_X.shape[0]==minValue+1:
+				break
+		tmp_X = np.delete(tmp_X, 0, 0)
+		tmp_Y = np.delete(tmp_Y, 0, 0)
 
-	gc.collect()
+		new_X = np.concatenate((new_X, tmp_X), axis=0)
+		new_Y = np.concatenate((new_Y, tmp_Y), axis=0)
+
+	new_data = [new_X, new_Y]
+	print(new_data[0].shape)
+	return new_data
 
 def convertByteLikeArrayToString(data):
 		stringData = ""
