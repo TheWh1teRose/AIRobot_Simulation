@@ -103,7 +103,7 @@ with graph.as_default():
 
 	with tf.variable_scope('secound_conv_layer_128_filter') as scope:
 		layer_conv3, weights_conv3 = cnn.create_conv_layer(layer_conv2_pool, num_filters2, filter_size3, num_filters3, name='3_conv_layer')
-		layer_conv4, weights_conv4 = cnn.create_conv_layer(layer_conv3, num_filters3, filter_size4, num_filters4, name='4_conv_layer')
+		#layer_conv4, weights_conv4 = cnn.create_conv_layer(layer_conv3, num_filters3, filter_size4, num_filters4, name='4_conv_layer')
 		layer_conv4_pool = cnn.pooling(layer_conv3, name='layer_4_pooling')
 
 	with tf.variable_scope('thirth_conv_layer_256_filter') as scope:
@@ -148,7 +148,7 @@ with graph.as_default():
 tf.reset_default_graph()
 with tf.Session(graph=graph) as session:
 	tf.global_variables_initializer().run()
-	saver.restore(session, 'checkpoints/model.ckpt')
+	saver.restore(session, 'checkpoints/ckpt1/model.ckpt')
 	cnt = Controller("127.0.0.1", 5003)
 	#cnt.startController()
 

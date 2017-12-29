@@ -94,7 +94,7 @@ with graph.as_default():
 	learning_rate = tf.train.exponential_decay(start_learning_rate, global_step, 1000, 0.96, staircase=True)
 	print(tf_X_train)
 
-	#tf_images = tf.image.resize_images(tf_X_train, [224, 224])
+	tf_images = tf.image.resize_images(tf_X_train, [224, 224])
 
 	with tf.name_scope('first_conv_layer_64_filter') as scope:
 		layer_conv1, weights_conv1 = cnn.create_conv_layer(tf_X_train, image_depth, filter_size1, num_filters1, name='1_conv_layer')
@@ -104,7 +104,7 @@ with graph.as_default():
 	with tf.variable_scope('secound_conv_layer_128_filter') as scope:
 		layer_conv3, weights_conv3 = cnn.create_conv_layer(layer_conv2_pool, num_filters2, filter_size3, num_filters3, name='3_conv_layer')
 		layer_conv4, weights_conv4 = cnn.create_conv_layer(layer_conv3, num_filters3, filter_size4, num_filters4, name='4_conv_layer')
-		layer_conv4_pool = cnn.pooling(layer_conv4, name='layer_4_pooling')
+		layer_conv4_pool = cnn.pooling(layer_conv3, name='layer_4_pooling')
 
 	with tf.variable_scope('thirth_conv_layer_256_filter') as scope:
 		layer_conv5, weights_conv5 = cnn.create_conv_layer(layer_conv4_pool, num_filters4, filter_size5, num_filters5, name='5_conv_layer')

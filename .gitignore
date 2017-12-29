@@ -13,6 +13,7 @@ DataProcessing/traindata*
 ExportedObj/
 .consulo/
 *.csproj
+
 *.unityproj
 *.sln
 *.suo
@@ -29,6 +30,8 @@ ExportedObj/
 *.ckpt.data-00000-of-00001
 *.ckpt.index
 *.ckpt.meta
+*.zip
+
 checkpoint
 
 # Unity3D generated meta files

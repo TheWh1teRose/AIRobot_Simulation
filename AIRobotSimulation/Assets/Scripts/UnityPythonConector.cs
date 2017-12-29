@@ -18,6 +18,7 @@ public class UnityPythonConector : MonoBehaviour {
     private int isRestarted = 1;
     private float timer = 0;
     private float sendTimer = 0;
+    private bool isRunThread = true;
 
     public float moveSpeed = 0.35f;
 
@@ -39,8 +40,8 @@ public class UnityPythonConector : MonoBehaviour {
         rcvClient = new UdpClient(5003);
 
         positionMatrix = new float[Convert.ToInt32(x), Convert.ToInt32(y), Convert.ToInt32(h)];
-        receiveThread = new Thread(new ThreadStart(RemoteControl));
-        receiveThread.Start();
+        //receiveThread = new Thread(new ThreadStart(RemoteControl));
+        //receiveThread.Start();
     }
 
 	// Update is called once per frame
@@ -48,7 +49,7 @@ public class UnityPythonConector : MonoBehaviour {
         if(Input.GetKeyDown("f") && timer > 1){
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             client = new UdpClient(5002);
-            rcvClient = new UdpClient(5003);
+            //rcvClient = new UdpClient(5003);
             Time.timeScale = 1f;
             isRestarted = 1;
             timer = 0;
@@ -70,6 +71,7 @@ public class UnityPythonConector : MonoBehaviour {
     {
         client.Close();
         rcvClient.Close();
+        isRunThread = false;
     }
 
     private void UDPSendControls()
@@ -106,7 +108,7 @@ public class UnityPythonConector : MonoBehaviour {
 
     private void RemoteControl()
     {
-          while(true)
+          while(isRunThread)
           {
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5003);
             Byte[] receiveBytes = rcvClient.Receive(ref endpoint);

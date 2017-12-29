@@ -34,7 +34,7 @@ def qualifyData(data):
 	dataframe = pd.DataFrame({'data':stringData})
 	counts = dataframe['data'].value_counts().values
 	min_counts = np.amin(counts)
-	print(dataframe['data'].value_counts())
+#	print(dataframe['data'].value_counts())
 
 	minValue = dataframe['data'].value_counts().min()
 	shuffled_X, shuffled_Y = sklearn.utils.shuffle(data[0], data[1])
@@ -46,7 +46,7 @@ def qualifyData(data):
 		tmp_X = np.zeros([1,300,300,6])
 		tmp_Y = np.zeros([1,8])
 		for i in range(shuffled_Y.shape[0]):
-			if (np.array(shuffled_Y[i-1])==value).all():
+			if np.array_equal(np.array(shuffled_Y[i-1]), value):
 				tmp_Y = np.concatenate((tmp_Y, shuffled_Y[i-1][np.newaxis,...]), axis=0)
 				tmp_X = np.concatenate((tmp_X, shuffled_X[i-1][np.newaxis,...]), axis=0)
 			if tmp_X.shape[0]==minValue+1:
@@ -55,6 +55,8 @@ def qualifyData(data):
 		tmp_Y = np.delete(tmp_Y, 0, 0)
 
 		new_X = np.concatenate((new_X, tmp_X), axis=0)
+		print(new_Y.shape)
+		print(tmp_Y.shape)
 		new_Y = np.concatenate((new_Y, tmp_Y), axis=0)
 
 	new_data = [new_X, new_Y]
