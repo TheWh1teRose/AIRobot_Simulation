@@ -18,7 +18,12 @@ def create_conv_layer(input, num_input_channels, filter_size, num_filters, name=
 		layer = tf.nn.conv2d(input=input, filter=weights, strides=[1, cnn_stride, cnn_stride, 1], padding='SAME', name='conv2d')
 		layer += biases
 
+		layer = tf.nn.relu(layer)
+
 		layer = tf.nn.relu(layer, name='relu')
+		tf.summary.histogram("weights", weights)
+		tf.summary.histogram("biases", biases)
+		tf.summary.histogram("activations", layer)
 
 		return layer, weights
 
