@@ -176,6 +176,8 @@ with tf.Session(graph=graph) as session:
 
 		session.run(optimizer, feed_dict={tf_X_train: X_batch, tf_y_train: y_batch, keep_prob: keep_probability})
 		summary, acc = session.run([merged, accuracy], feed_dict={tf_X_train: X_batch, tf_y_train: y_batch, keep_prob: 1})
+		run_metadata = tf.RunMetadata()
+		train_writer.add_run_metadata(run_metadata, 'step{}'.format(total_epochs))
 		train_writer.add_summary(summary, total_epochs)
 		total_epochs += 1
 		if total_epochs % 250 == 0:
