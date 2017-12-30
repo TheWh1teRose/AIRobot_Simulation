@@ -46,7 +46,7 @@ def processData(data):
 
 
 	new_data = [np.array(new_X), np.array(new_Y)]
-	new_data = pu.qualifyData(new_data)
+	#new_data = pu.qualifyData(new_data)
 	print(new_data[0].shape)
 	print(new_data[1].shape)
 	return new_data

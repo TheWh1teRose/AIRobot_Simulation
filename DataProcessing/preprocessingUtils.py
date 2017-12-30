@@ -34,7 +34,7 @@ def qualifyData(data):
 	dataframe = pd.DataFrame({'data':stringData})
 	counts = dataframe['data'].value_counts().values
 	min_counts = np.amin(counts)
-#	print(dataframe['data'].value_counts())
+	print(dataframe['data'].value_counts())
 
 	minValue = dataframe['data'].value_counts().min()
 	shuffled_X, shuffled_Y = sklearn.utils.shuffle(data[0], data[1])
