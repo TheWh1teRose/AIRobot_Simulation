@@ -35,7 +35,7 @@ x_min = X.min(axis=(1,2), keepdims=True)
 x_max = X.max(axis=(1,2), keepdims=True)
 X = (X - x_min)/(x_max - x_min)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True)
 X_test, X_valid = np.array_split(X_test, 2)
 y_test, y_valid = np.array_split(y_test, 2)
 print("X train: " + str(X_train.shape))
@@ -56,7 +56,7 @@ num_lable = 8
 
 def accuracy(predictions, labels):
 	return (100.0 * np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1)) / predictions.shape[0])
-for keep_probability in [0.5, 0.4, 0.6]:
+for keep_probability in [0.8]:
 	for lr in [1E-4]:
 		modellID = 0
 		graph = tf.Graph()
@@ -70,12 +70,8 @@ for keep_probability in [0.5, 0.4, 0.6]:
 			global_step = tf.Variable(0, trainable=False)
 			learning_rate = tf.train.exponential_decay(lr, global_step, 1000, 0.96, staircase=True)
 
-			if modellID == 0:
-				logits = modell.VGG_D(keep_prob, tf_images)
-			if modellID == 1:
-				logits = modell.VGG_E(keep_prob, tf_images)
-			if modellID == 2:
-				logits = modell.VGG_E(keep_prob, tf_images)
+
+			logits = modell.VGG_A(keep_prob, tf_images)
 
 
 			y_pred = tf.nn.softmax(logits)
@@ -98,7 +94,7 @@ for keep_probability in [0.5, 0.4, 0.6]:
 
 		with tf.Session(graph=graph) as session:
 			tf.global_variables_initializer().run()
-			train_writer = tf.summary.FileWriter('statistics/summ_Modell{}_{}'.format(modellID+4, lr), session.graph)
+			train_writer = tf.summary.FileWriter('statistics/summ_Modell{}_kp{}'.format(modellID+1, keep_probability), session.graph)
 			total_epochs = 1
 			courent_batch_position = 0
 			epochs = 1000
@@ -149,7 +145,7 @@ for keep_probability in [0.5, 0.4, 0.6]:
 					print("batches seen: " + str(tf.train.global_step(session, global_step)))
 
 				if total_epochs % 250 == 0:
-					save_path = saver.save(session, "ckpts/model_{}_{}_{}.ckpt".format(total_epochs, modellID+4, lr))
+					save_path = saver.save(session, "ckpts/model_{}_{}_kp{}.ckpt".format(total_epochs, modellID+1, keep_probability))
 			all_acc_test = []
 			for i in range(int(X_test.shape[0]/batch_size)+1):
 				if (courent_batch_position + batch_size) <= X_test.shape[0]:
