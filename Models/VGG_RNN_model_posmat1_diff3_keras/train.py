@@ -31,8 +31,15 @@ for f in file:
 
 
 new_x = np.array_split(X, X.shape[0]/10)
-new_x = np.array(i[np.newaxis,...] for i in new_x)
-print(new_x.shape)
+X = None
+for element in new_x:
+	if X == None:
+		X = element[np.newaxis,...]
+	else:
+		X = np.concatenate((X,element[np.newaxis,...]), axis=0)
+
+
+print(X.shape)
 
 #X = X[:,:,:,:3]
 print(X.shape)
