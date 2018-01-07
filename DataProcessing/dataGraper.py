@@ -92,7 +92,7 @@ while True:
 	#convert controls to onehot and print it
 	controls = convertControls(controlsStr)
 
-	updatePositionMatrix(3)
+	updatePositionMatrix(10)
 	posMatrixSumX, posMatrixSumY, posMatrixSumZ = getPositionMatrixImages()
 	#read the screen, put it in to an numpy array and show it in a window
 	printscreen = np.array(ImageGrab.grab(bbox=(2,50,302,350)))
