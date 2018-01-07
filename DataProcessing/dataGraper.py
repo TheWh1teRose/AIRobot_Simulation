@@ -16,7 +16,7 @@ gc.enable()
 controlsStr = "0:0:0:0"
 posInMatrixStr = "0:0:0"
 isRestarted = 0;
-posMatrixSize = [30,30,30]
+posMatrixSize = [60,60,60]
 posMatrix = np.zeros((posMatrixSize[0],posMatrixSize[1],posMatrixSize[2]))
 lastTime = time.time()
 data = np.array([np.zeros((300,300,6), dtype=np.float64), np.zeros(8, dtype=np.int8)])
@@ -59,9 +59,10 @@ def updatePositionMatrix(smoothing):
 
 #sum up the position-matrix fro the axis to visualizes the matrix
 def getPositionMatrixImages():
-	posMatrixSumX = np.sum(posMatrix, axis=0).repeat(10,axis=0).repeat(10,axis=1)
-	posMatrixSumY = np.sum(posMatrix, axis=1).repeat(10,axis=0).repeat(10,axis=1)
-	posMatrixSumZ = np.sum(posMatrix, axis=2).repeat(10,axis=0).repeat(10,axis=1)
+	posMatrixSumX = np.sum(posMatrix, axis=0).repeat(5,axis=0).repeat(5,axis=1)
+	posMatrixSumY = np.sum(posMatrix, axis=1).repeat(5,axis=0).repeat(5,axis=1)
+	posMatrixSumZ = np.sum(posMatrix, axis=2).repeat(5,axis=0).repeat(5,axis=1)
+	print(posMatrixSumX.shape)
 	return posMatrixSumX, posMatrixSumY, posMatrixSumZ
 
 #save the training data to disc

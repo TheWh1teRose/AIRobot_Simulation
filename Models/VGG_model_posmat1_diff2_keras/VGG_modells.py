@@ -30,7 +30,9 @@ def VGG_A(keep_prob, split_size):
     filter_size10 = 3
     num_filters10 = 512
     #maxpool
-    rnn_size1 = 4096
+    fc_size1 = 4096
+    fc_size2 = 4096
+    fc_size3 = 1000
 
 
     image_width = 300
@@ -39,7 +41,7 @@ def VGG_A(keep_prob, split_size):
     num_lable = 8
     batch_size = 32
 
-    imput_shape = [7, image_width, image_height, image_depth]
+    imput_shape = [5, image_width, image_height, image_depth]
 
     model = keras.models.Sequential()
 
