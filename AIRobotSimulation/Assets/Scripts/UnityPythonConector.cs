@@ -26,9 +26,9 @@ public class UnityPythonConector : MonoBehaviour {
      int vertical = 0;
      int height = 0;
 
-    private float x = 30;
-    private float y = 30;
-    private float h = 30;
+    private float x = 60;
+    private float y = 60;
+    private float h = 60;
     private int smothing = 8;
     //                         x,   y,    h
     private float[] startPositions = {-1.3f,0.5f,1.3f};

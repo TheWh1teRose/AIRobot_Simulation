@@ -85,7 +85,7 @@ early_stopper = keras.callbacks.EarlyStopping(patience=7)
 timestamp = time.time()
 csv_logger = keras.callbacks.CSVLogger(os.path.join('logs', 'LRCN' + '-' + 'training-' + str(timestamp) + '.log'))
 
-modell = VGG_modells.VGG_A(0.5, 5)
+modell = VGG_modells.VGG_A(0.5)
 optimizer = keras.optimizers.Adam(lr=1e-5, decay=1e-6)
 metrics = ['accuracy']
 modell.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=metrics)

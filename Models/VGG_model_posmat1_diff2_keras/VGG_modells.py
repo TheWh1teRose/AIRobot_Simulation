@@ -30,7 +30,9 @@ def VGG_A(keep_prob, split_size):
     filter_size10 = 3
     num_filters10 = 512
     #maxpool
-    rnn_size1 = 4096
+    fc_size1 = 4096
+    fc_size2 = 4096
+    fc_size3 = 1000
 
 
     image_width = 300

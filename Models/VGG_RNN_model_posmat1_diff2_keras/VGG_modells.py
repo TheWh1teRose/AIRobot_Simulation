@@ -3,7 +3,7 @@ import tensorflow as tf
 import CNN_utils as cnn
 import keras
 
-def VGG_A(keep_prob, split_size):
+def VGG_A(keep_prob):
     #architecture
     filter_size1 = 3
     num_filters1 = 64
