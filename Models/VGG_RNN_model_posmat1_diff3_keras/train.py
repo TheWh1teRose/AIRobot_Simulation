@@ -33,10 +33,10 @@ x_min = X.min(axis=(1,2), keepdims=True)
 x_max = X.max(axis=(1,2), keepdims=True)
 X = (X - x_min)/(x_max - x_min)
 
-new_x = np.array_split(X, X.shape[0]/5)
+new_x = np.array_split(X, X.shape[0]/7)
 X = None
 for element in new_x[1:]:
-	if element.shape[0] != 5:
+	if element.shape[0] != 7:
 		continue
 	if X is None:
 		X = element[np.newaxis,...]
@@ -45,10 +45,10 @@ for element in new_x[1:]:
 		print(X.shape)
 		X = np.concatenate((X,element[np.newaxis,...]), axis=0)
 
-new_y = np.array_split(y, y.shape[0]/5)
+new_y = np.array_split(y, y.shape[0]/7)
 y = None
 for element in new_y[1:]:
-	if element.shape[0] != 5:
+	if element.shape[0] != 7:
 		continue
 	if y is None:
 		y = element[np.newaxis,...]
@@ -85,7 +85,7 @@ early_stopper = keras.callbacks.EarlyStopping(patience=7)
 timestamp = time.time()
 csv_logger = keras.callbacks.CSVLogger(os.path.join('logs', 'LRCN' + '-' + 'training-' + str(timestamp) + '.log'))
 
-modell = VGG_modells.VGG_A(0.5)
+modell = keras.models.load_model('LRCN_17_0.38.hdf5')
 optimizer = keras.optimizers.Adam(lr=1e-5, decay=1e-6)
 metrics = ['accuracy']
 modell.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=metrics)

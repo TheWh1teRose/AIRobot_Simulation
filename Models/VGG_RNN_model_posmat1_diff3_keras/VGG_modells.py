@@ -39,7 +39,7 @@ def VGG_A(keep_prob):
     num_lable = 8
     batch_size = 32
 
-    imput_shape = [5, image_width, image_height, image_depth]
+    imput_shape = [7, image_width, image_height, image_depth]
 
     model = keras.models.Sequential()
 
