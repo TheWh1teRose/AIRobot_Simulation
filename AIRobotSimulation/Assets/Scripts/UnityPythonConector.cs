@@ -39,9 +39,9 @@ public class UnityPythonConector : MonoBehaviour {
         client = new UdpClient(5002);
         rcvClient = new UdpClient(5003);
 
-        //positionMatrix = new float[Convert.ToInt32(x), Convert.ToInt32(y), Convert.ToInt32(h)];
-        //receiveThread = new Thread(new ThreadStart(RemoteControl));
-        //receiveThread.Start();
+        positionMatrix = new float[Convert.ToInt32(x), Convert.ToInt32(y), Convert.ToInt32(h)];
+        receiveThread = new Thread(new ThreadStart(RemoteControl));
+        receiveThread.Start();
     }
 
 	// Update is called once per frame
