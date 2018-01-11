@@ -58,7 +58,7 @@ public class UnityPythonConector : MonoBehaviour {
         timer += Time.deltaTime;
         sendTimer += Time.deltaTime;
 
-        Debug.Log("" + horizontal + ":" + vertical + ":" + height);
+        //Debug.Log("" + horizontal + ":" + vertical + ":" + height);
 
         traget.transform.Translate(moveSpeed * horizontal*Time.deltaTime,
             moveSpeed * vertical * Time.deltaTime,
@@ -89,13 +89,13 @@ public class UnityPythonConector : MonoBehaviour {
           else if(Input.GetAxis("Height")>0){height=1;}
           else if(Input.GetAxis("Height")<0){height=-1;}
 
-            Debug.Log(isRestarted);
+            //Debug.Log(isRestarted);
 
             string controls = horizontal + ":"
             + -vertical + ":"
             + -height + ":"  + getGrab();
 
-            Debug.Log(controls);
+            //Debug.Log(controls);
 
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
             byte[] sendBytes = Encoding.ASCII.GetBytes(controls + "$" + isRestarted + "$" + getPositionInMatrix());
@@ -125,7 +125,7 @@ public class UnityPythonConector : MonoBehaviour {
             if(returnData[8].Equals('0')&&returnData[10].Equals('0')){height=0;}
             //if(returnData[6].Equals('1')){horizontal=1;}
             //Sif(returnData[7].Equals('1')){horizontal=1;}
-            Debug.Log(returnData);
+            //Debug.Log(returnData);
           }
 
     }

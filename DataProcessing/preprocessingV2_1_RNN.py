@@ -48,7 +48,7 @@ def processData(data):
 	new_X = None
 	gc.collect()
 	X = None
-	for element in split_x[1:]:
+	for element in split_x:
 		if element.shape[0] != 7:
 			continue
 		if X is None:
@@ -62,7 +62,7 @@ def processData(data):
 	new_Y = None
 	gc.collect()
 	y = None
-	for element in split_y[1:]:
+	for element in split_y:
 		if element.shape[0] != 7:
 			continue
 		if y is None:
