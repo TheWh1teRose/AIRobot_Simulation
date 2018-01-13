@@ -11,6 +11,7 @@ import functools
 import VGG_modells
 import keras
 import os.path
+import gc
 
 path = 'C:/Users/Paperspace/Documents/GitHub/AIRobot_Simulation/DataProcessing/traindata/pre_diff4_60/*'
 file = glob.glob(path)
@@ -21,11 +22,13 @@ for f in file:
 	if data is None:
 		print("loaded: " + f)
 		data = pickle.load(open(f, "rb"))
-		print("loaded: " + f)
+		gc.collect()
 		X = data[0]
 		y = data[1]
 	else:
 		data = pickle.load(open(f, "rb"))
+		gc.collect()
+		print("loaded: " + f)
 		X = np.concatenate((X, data[0]))
 		y = np.concatenate((y, data[1]))
 

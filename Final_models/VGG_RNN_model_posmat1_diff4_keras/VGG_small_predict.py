@@ -45,7 +45,7 @@ def getPositionMatrixImages():
 
 
 
-model = keras.models.load_model('ckpts/LRCN_21_0.61.hdf5')
+model = keras.models.load_model('ckpts/LRCN_15_0.41.hdf5')
 cnt = Controller("127.0.0.1", 5003)
 #cnt.startController()
 

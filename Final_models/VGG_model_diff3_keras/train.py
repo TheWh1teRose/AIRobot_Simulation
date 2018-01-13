@@ -12,7 +12,7 @@ import VGG_modells
 import keras
 import os.path
 
-path = 'C:/Users/Paperspace/Documents/GitHub/AIRobot_Simulation/DataProcessing/traindata/pre_diff3_60_normal/*'
+path = 'C:/Users/Paperspace/Documents/GitHub/AIRobot_Simulation/DataProcessing/traindata/pre_diff4_60_normal/*'
 file = glob.glob(path)
 data = None
 print(file)
