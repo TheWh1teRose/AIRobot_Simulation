@@ -641,7 +641,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 430388744}
-  m_LocalRotation: {x: -0.08690761, y: -0.045172956, z: 0.51641506, w: 0.8507185}
+  m_LocalRotation: {x: -0.08690721, y: -0.04517293, z: 0.5164149, w: 0.8507187}
   m_LocalPosition: {x: -0.0802622, y: 0.42320007, z: 0.016923092}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -924,7 +924,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 723190148}
-  m_LocalRotation: {x: -0.5063307, y: 0.8361748, z: 0.16921692, w: 0.12572457}
+  m_LocalRotation: {x: -0.5065085, y: 0.83606714, z: 0.16918999, w: 0.12576039}
   m_LocalPosition: {x: 0.082, y: 0.865, z: -0.004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -948,6 +948,7 @@ GameObject:
   - component: {fileID: 844914230}
   - component: {fileID: 844914234}
   - component: {fileID: 844914235}
+  - component: {fileID: 844914237}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1015,7 +1016,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 844914229}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.646, y: 1.154, z: 2.358}
+  m_LocalPosition: {x: -0.026, y: 1.154, z: 2.502}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1060,6 +1061,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &844914237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 844914229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f32a196e00fd6440af112968f1d0c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &950936105
 GameObject:
   m_ObjectHideFlags: 0
@@ -1122,7 +1134,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 3d7b65fca621f3b40964e384d28e8e01, type: 2}
+  - {fileID: 2100000, guid: 18af84c232247a840a7faffe8c7a1d17, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1180,8 +1192,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 950936105}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.743, y: 1.091, z: 2.834}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalPosition: {x: -0.661, y: 1.177, z: 2.503}
+  m_LocalScale: {x: 0.3, y: 0.2, z: 0.3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 9
@@ -1988,7 +2000,6 @@ GameObject:
   - component: {fileID: 1671836830}
   - component: {fileID: 1671836829}
   - component: {fileID: 1671836836}
-  - component: {fileID: 1671836837}
   m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
@@ -2096,7 +2107,7 @@ Transform:
   m_GameObject: {fileID: 1671836828}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.286, y: 1.171, z: 2.778}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.12, y: 0.12, z: 0.12}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 10
@@ -2112,20 +2123,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f32a196e00fd6440af112968f1d0c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1671836837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1671836828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aca25b35b0d6e424394aa18f39b240c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  material:
-  - {fileID: 2100000, guid: 3d7b65fca621f3b40964e384d28e8e01, type: 2}
-  - {fileID: 2100000, guid: 18af84c232247a840a7faffe8c7a1d17, type: 2}
 --- !u!1 &1791169433
 GameObject:
   m_ObjectHideFlags: 0
@@ -2231,7 +2228,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1829603026}
-  m_LocalRotation: {x: -0.6136202, y: 0.24434769, z: 0.40463406, w: -0.6324838}
+  m_LocalRotation: {x: -0.61367196, y: 0.24421725, z: 0.40449974, w: -0.6325699}
   m_LocalPosition: {x: 0, y: 0, z: -0.863}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
