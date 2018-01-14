@@ -44,7 +44,36 @@ def processData(data):
 		new_Y = np.concatenate((new_Y, full_Y[i+1][np.newaxis,...]), axis=0)
 		new_X = np.concatenate((new_X, full_X[i][np.newaxis,...]), axis=0)
 
-	new_data = [np.array(new_X), np.array(new_Y)]
+	split_x = np.array_split(new_X, new_X.shape[0]/7)
+	new_X = None
+	gc.collect()
+	X = None
+	for element in split_x:
+		if element.shape[0] != 7:
+			continue
+		if X is None:
+			X = element[np.newaxis,...]
+		else:
+			print(element.shape)
+			print(X.shape)
+			X = np.concatenate((X,element[np.newaxis,...]), axis=0)
+
+	split_y = np.array_split(new_Y, new_Y.shape[0]/7)
+	new_Y = None
+	gc.collect()
+	y = None
+	for element in split_y:
+		if element.shape[0] != 7:
+			continue
+		if y is None:
+			y = element[np.newaxis,...]
+		else:
+			print(element.shape)
+			print(y.shape)
+			y = np.concatenate((y,element[np.newaxis,...]), axis=0)
+
+
+	new_data = [np.array(X), np.array(y)]
 	#new_data = pu.qualifyData(new_data)
 	print(new_data[0].shape)
 	print(new_data[1].shape)
