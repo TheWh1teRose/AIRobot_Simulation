@@ -17,7 +17,6 @@ import keras
 def updatePositionMatrix():
 	global lastTime
 	global posMatrix
-	global isRestarted
 	cntRcv = Controller("127.0.0.1", 5002)
 	cntRcv.startController()
 
@@ -46,7 +45,7 @@ def getPositionMatrixImages():
 
 
 
-model = keras.models.load_model('ckpts/Model_21_0.864155977448069')
+model = keras.models.load_model('ckpts/LRCN_37_0.33.hdf5')
 cnt = Controller("127.0.0.1", 5003)
 #cnt.startController()
 
@@ -70,22 +69,27 @@ while True:
 	posMatrixSumX, posMatrixSumY, posMatrixSumZ = getPositionMatrixImages()
 	x = np.stack((printscreen[:,:,0], printscreen[:,:,1], printscreen[:,:,2], posMatrixSumX, posMatrixSumY, posMatrixSumZ), axis=2)
 
-	data = x[np.newaxis,np.newaxis,...]
-	cv2.imshow('screen', np.array(data[0,0,:,:,:3],dtype=np.int8))
-	cv2.imshow('posMatrixX', data[0,0,:,:,3])
-	cv2.imshow('posMatrixY', data[0,0,:,:,4])
-	cv2.imshow('posMatrixZ', data[0,0,:,:,5])
+	data = x[np.newaxis,...]
+	cv2.imshow('screen', np.array(data[0,:,:,:3],dtype=np.int8))
+	cv2.imshow('posMatrixX', data[0,:,:,3])
+	cv2.imshow('posMatrixY', data[0,:,:,4])
+	cv2.imshow('posMatrixZ', data[0,:,:,5])
 
-	frames_min = data.min(axis=((1,2,3,4)), keepdims=True)
-	frames_max = data.max(axis=((1,2,3,4)), keepdims=True)
-	data = (data - frames_min)/(frames_max - frames_min)
+	if frames is None:
+		frames = np.zeros((1,7,300,300,6), dtype=np.float32)
+		for i in range(7):
+			frames[0,i,...] = data
 
-	if isRestarted != 0:
-		model.reset_states()
-		posMatrix = np.zeros((posMatrixSize[0],posMatrixSize[1],posMatrixSize[2]))
+	frames = frames[:,:-1,...]
+	frames = np.concatenate((frames[0,...], data))
+	frames = frames[np.newaxis,...]
 
-	prediction = model.predict(data)
-	predicted_data = prediction[0,0,...]
+	frames_min = frames.min(axis=((1,2,3,4)), keepdims=True)
+	frames_max = frames.max(axis=((1,2,3,4)), keepdims=True)
+	frames = (frames - frames_min)/(frames_max - frames_min)
+
+	prediction = model.predict(frames)
+	predicted_data = prediction[0,6,...]
 	prediction = np.unravel_index(predicted_data.argmax(), predicted_data.shape)
 	cls_predection = np.zeros(8, dtype=np.int8)
 	cls_predection[prediction] = 1
