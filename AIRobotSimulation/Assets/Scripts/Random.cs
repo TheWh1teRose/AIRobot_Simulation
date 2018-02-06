@@ -13,7 +13,7 @@ public class Random : MonoBehaviour {
 	void Start () {
 		x = UnityEngine.Random.Range (-0.451f, 0.715f);
 		y = 1.121f;
-		z = UnityEngine.Random.Range (2.831f, 2.083f);
+		z = UnityEngine.Random.Range (2.831f, 2.183f);
 		Vector3 pos = new Vector3 (x, y, z);
 		gameObject.transform.position = pos;
 	}

@@ -26,9 +26,9 @@ public class UnityPythonConector : MonoBehaviour {
      int vertical = 0;
      int height = 0;
 
-    private float x = 30;
-    private float y = 30;
-    private float h = 30;
+    private float x = 60;
+    private float y = 60;
+    private float h = 60;
     private int smothing = 8;
     //                         x,   y,    h
     private float[] startPositions = {-1.3f,0.5f,1.3f};
@@ -39,7 +39,7 @@ public class UnityPythonConector : MonoBehaviour {
         client = new UdpClient(5002);
         rcvClient = new UdpClient(5003);
 
-        //positionMatrix = new float[Convert.ToInt32(x), Convert.ToInt32(y), Convert.ToInt32(h)];
+        positionMatrix = new float[Convert.ToInt32(x), Convert.ToInt32(y), Convert.ToInt32(h)];
         //receiveThread = new Thread(new ThreadStart(RemoteControl));
         //receiveThread.Start();
     }
@@ -58,7 +58,7 @@ public class UnityPythonConector : MonoBehaviour {
         timer += Time.deltaTime;
         sendTimer += Time.deltaTime;
 
-        Debug.Log("" + horizontal + ":" + vertical + ":" + height);
+        //Debug.Log("" + horizontal + ":" + vertical + ":" + height);
 
         traget.transform.Translate(moveSpeed * horizontal*Time.deltaTime,
             moveSpeed * vertical * Time.deltaTime,
@@ -89,13 +89,13 @@ public class UnityPythonConector : MonoBehaviour {
           else if(Input.GetAxis("Height")>0){height=1;}
           else if(Input.GetAxis("Height")<0){height=-1;}
 
-            Debug.Log(isRestarted);
+            //Debug.Log(isRestarted);
 
             string controls = horizontal + ":"
             + -vertical + ":"
             + -height + ":"  + getGrab();
 
-            Debug.Log(controls);
+            //Debug.Log(controls);
 
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
             byte[] sendBytes = Encoding.ASCII.GetBytes(controls + "$" + isRestarted + "$" + getPositionInMatrix());
@@ -125,7 +125,7 @@ public class UnityPythonConector : MonoBehaviour {
             if(returnData[8].Equals('0')&&returnData[10].Equals('0')){height=0;}
             //if(returnData[6].Equals('1')){horizontal=1;}
             //Sif(returnData[7].Equals('1')){horizontal=1;}
-            Debug.Log(returnData);
+            //Debug.Log(returnData);
           }
 
     }

@@ -4,7 +4,7 @@ import pickle
 import time
 #np.set_printoptions(threshold=np.nan)
 
-file = 'F:/Dokumente/Programmieren/RoboPen/UnitySimulation/AIRobot_Simulation/DataProcessing/traindata/pre/data_1_1223171728'
+file = 'F:/Dokumente/Programmieren/RoboPen/UnitySimulation/AIRobot_Simulation/DataProcessing/traindata/pre/data_1_0114180931'
 data = pickle.load( open(file, "rb"))
 x = data[0]
 y = data[1]
