@@ -33,7 +33,7 @@ for f in file:
 new_x = np.array_split(X, X.shape[0]/10)
 X = None
 for element in new_x:
-	if X == None:
+	if X is None:
 		X = element[np.newaxis,...]
 	else:
 		X = np.concatenate((X,element[np.newaxis,...]), axis=0)
