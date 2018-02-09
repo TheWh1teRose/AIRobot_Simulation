@@ -29,6 +29,24 @@ for f in file:
 		X = np.concatenate((X, data[0]))
 		y = np.concatenate((y, data[1]))
 
+<<<<<<< HEAD:Models/VGG_RNN_model_posmat1_diff3_keras/train.py
+
+new_x = np.array_split(X, X.shape[0]/10)
+X = None
+for element in new_x:
+	if X is None:
+		X = element[np.newaxis,...]
+	else:
+		X = np.concatenate((X,element[np.newaxis,...]), axis=0)
+
+
+print(X.shape)
+
+#X = X[:,:,:,:3]
+print(X.shape)
+
+=======
+>>>>>>> fa11eeebc9a7021e76f987f869b88906bb8086ef:Final_models/VGG_model_posmat1_diff1_keras/train.py
 x_min = X.min(axis=(1,2), keepdims=True)
 x_max = X.max(axis=(1,2), keepdims=True)
 X = (X - x_min)/(x_max - x_min)
